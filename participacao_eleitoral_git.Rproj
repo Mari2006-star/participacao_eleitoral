@@ -1,0 +1,120 @@
+library(tidyverse)
+library(dplyr)
+library(tidyverse)
+library(magrittr)
+install.packages("units")
+library(units)
+
+
+library(tidyverse)
+library(dplyr)
+library(tidyverse)
+library(magrittr)
+
+# Definir o caminho da pasta onde estão os arquivos CSV - utilizar minha pasta 
+dados2014<- read.csv2("C:/Users/maria/OneDrive/Área de Trabalho/dados/perfil_eleitorado_2014.csv", T)
+dados2018<- read.csv2("C:/Users/maria/OneDrive/Área de Trabalho/dados/perfil_eleitorado_2018.csv", T)
+dados2022<- read.csv2("C:/Users/maria/OneDrive/Área de Trabalho/dados/perfil_eleitorado_2022.csv", T)
+
+dados<-as.data.frame(dados2014)
+dados<-as.data.frame(dados2018)
+dados<-as.data.frame(dados2022)
+
+########excluir fatores########
+# Remover a coluna "nome"- nome da coluna
+dados2014$taxa_participacao <- dados2014$QT_ELEITORES_VOTARAM / dados2014$QT_ELEITORES_APTOS
+#2014#
+colnames(dados2014)
+colnames(dados2014) <- trimws(colnames(dados2014)) # Remover espaços em branco nos nomes das colunas
+dados2014<- dados2014[, !(names(dados2014) %in% c("DT_GERACAO", "HH_GERACAO", "CD_MUNICIPIO", "NM_MUNICIPIO", "CD_MUN_SIT_BIOMETRICA", "DS_MUN_SIT_BIOMETRICA", "NR_ZONA", "CD_GENERO", "CD_ESTADO_CIVIL", "CD_FAIXA_ETARIA", "CD_GRAU_ESCOLARIDADE", "QT_ELEITORES_BIOMETRIA", "QT_ELEITORES_DEFICIENCIA", "QT_ELEITORES_INC_NM_SOCIAL"))] #excluir colunas sem filtrar linhas
+head(dados2014) #ler as primeiras linhas - verificar se foi lido corretamente
+
+#2018#
+colnames(dados2018)
+colnames(dados2018) <- trimws(colnames(dados2018))
+dados2018<- dados2018[, !(names(dados2018) %in% c("DT_GERACAO", "HH_GERACAO", "CD_MUNICIPIO", "NM_MUNICIPIO", "CD_MUN_SIT_BIOMETRICA", "DS_MUN_SIT_BIOMETRICA", "NR_ZONA", "CD_GENERO", "CD_ESTADO_CIVIL", "CD_FAIXA_ETARIA", "CD_GRAU_ESCOLARIDADE", "QT_ELEITORES_BIOMETRIA", "QT_ELEITORES_DEFICIENCIA", "QT_ELEITORES_INC_NM_SOCIAL"))] #excluir colunas sem filtrar linhas
+head(dados2018)
+
+#2022#
+colnames(dados2022)
+colnames(dados2022) <- trimws(colnames(dados2022))
+dados2022<- dados2022[, !(names(dados2022) %in% c("DT_GERACAO", "HH_GERACAO", "CD_MUNICIPIO", "NM_MUNICIPIO", "DS_MUN_SIT_BIOMETRICA", "NR_ZONA", "CD_GENERO", "CD_ESTADO_CIVIL", "CD_FAIXA_ETARIA", "CD_GRAU_ESCOLARIDADE", "QT_ELEITORES_BIOMETRIA", "QT_ELEITORES_DEFICIENCIA", "QT_ELEITORES_INC_NM_SOCIAL", "CD_RACA_COR", "DS_RACA_COR", "CD_IDENTIDADE_GENERO", "DS_IDENTIDADE_GENERO", "CD_QUILOMBOLA", "DS_QUILOMBOLA", "CD_INTERPRETE_LIBRAS", "DS_INTERPRETE_LIBRAS"))] #excluir colunas sem filtrar linhas
+head(dados2022)
+
+
+#############################################
+#combinar as planilhas
+# Empilhar os dados dos três anos (2014, 2018, 2022) não precisa
+dados_combinados <- rbind(dados2014, dados2018, dados2022)
+
+
+# Verificar as primeiras linhas do data frame combinado
+head(dados_combinados)
+
+#salavar as planilhas com as alterações
+library(data.table)
+fwrite(dados_combinados, "dados_filtrados.csv", sep = ",")    #para arquivos grandes
+##################################################################################
+
+class(dados2014$ANO_ELEICAO)
+dados2014$ANO_ELEICAO<-as.character(dados2014$ANO_ELEICAO)
+
+class(dados_combinados$SG_UF)          #verificar os tipos de variaveis
+class(dados_combinados$DS_GENERO)             #transformar tds as variaveis em caracteres
+class(dados_combinados$DS_ESTADO_CIVIL)
+class(dados_combinados$DS_FAIXA_ETARIA)
+class(dados_combinados$DS_GRAU_ESCOLARIDADE)
+
+class(dados2014$QT_ELEITORES_PERFIL)
+dados2014$QT_ELEITORES_PERFIL<-as.character(dados2014$QT_ELEITORES_PERFIL)
+
+
+#######modelo de regressão####### transformar td em fator/ (s.factor)
+#passos#:
+#1. realizar análise descritiva: summary, plot,histograma, identificação de outliers
+#2. realizar análise de correlação entre as variáveis explicativas
+#3. montar o modelo de regressão linear
+
+#ANALISE DESCRITIVA#
+#SUMMARY
+summary(dados2014)
+summary(dados2018)
+summary(dados2022)
+
+#PLOT
+plot(dados2014$QT_ELEITORES_PERFIL)
+hist(dados2014$QT_ELEITORES_PERFIL) #estado civil/estado/ano de eleiçaõ/
+
+plot(dados2018$QT_ELEITORES_PERFIL)
+plot(dados2022$QT_ELEITORES_PERFIL)
+
+#BLOXPLOT
+install.packages("boxplot")
+library(boxplot)
+boxplot(dados2014$QT_ELEITORES_PERFIL)
+
+#IDENTIFICAÇÃO DOS OUTLIERS
+boxplot.stats(dados2014$QT_ELEITORES_PERFIL)$out
+boxplot.stats(dados2018$QT_ELEITORES_PERFIL)$out
+boxplot.stats(dados2022$QT_ELEITORES_PERFIL)$out
+
+library(tidyverse)
+glimpse(dados2014)
+boxplot(dado)
+
+#AS.FACTOR
+factor()]
+
+dados2014$DS_GENERO <- as.factor(dados2014$DS_GENERO)
+plot(dados2014$DS_GENERO) #colocar identificação/ leitura dos dados/ para rodar o modelo de regressão tem que está em número- double ou interger
+
+library(dplyr)
+
+summary(dados2014$DS_GENERO)
+
+dados2014$DS_GENERO <- as.factor(dados2014$DS_GENERO)
+
+dados2014 <- c("Masculino", "Feminino", "Masculino", "Feminino")
+
+# Recodificando valores
+dados_num <- recode(dados, "Masculino" = 1, "Feminino" = 2)
